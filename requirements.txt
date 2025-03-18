@@ -1,0 +1,2 @@
+pygame>=2.5.2
+python-vlc>=3.0.20123
