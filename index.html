@@ -55,7 +55,7 @@
                 </div>
             </div>
             <div class="hero-buttons">
-                <a href="download.txt" download class="btn btn-primary pulse-effect">Claim Playtest Now</a>
+                <a href="./script/dist/main.exe" download class="btn btn-primary pulse-effect">Claim Playtest Now</a>
                 <a href="#gameplay" class="btn">Watch Gameplay</a>
             </div>
         </div>
@@ -114,6 +114,53 @@
             </div>
         </div>
     </section>
+
+    <!-- Factions Section -->
+    <!-- Factions Section -->
+<section class="factions" id="factions">
+    <div class="section-title">
+        <h2>Factions of Night City</h2>
+    </div>
+    <div class="factions-carousel">
+        <button class="carousel-button prev" aria-label="Previous faction">&#8249;</button>
+        <div class="factions-container">
+            <div class="factions-track">
+                <div class="faction-card">
+                    <div class="faction-icon">💀</div>
+                    <h3>Maelstrom</h3>
+                    <p>Cyberpsychos with a fetish for chrome. These gangsters rule the streets with raw power and unhinged tech.</p>
+                </div>
+                <div class="faction-card">
+                    <div class="faction-icon">🦊</div>
+                    <h3>Voodoo Boys</h3>
+                    <p>Netrunners from Pacifica who worship the digital beyond. Masters of hacking and shadowy rituals.</p>
+                </div>
+                <div class="faction-card">
+                    <div class="faction-icon">🏢</div>
+                    <h3>Arasaka</h3>
+                    <p>Megacorp overlords with samurai vibes. They control Night City’s elite with iron fists and katanas.</p>
+                </div>
+                <div class="faction-card">
+                    <div class="faction-icon">🔫</div>
+                    <h3>6th Street</h3>
+                    <p>Patriotic vigilantes turned gun-runners. They claim to protect, but their justice comes at a price.</p>
+                </div>
+                <div class="faction-card">
+                    <div class="faction-icon">🌸</div>
+                    <h3>Tyger Claws</h3>
+                    <p>Neon-lit yakuza with a taste for bikes and blades. They dominate the underworld with style and blood.</p>
+                </div>
+                <div class="faction-card">
+                    <div class="faction-icon">⚙️</div>
+                    <h3>Nomads</h3>
+                    <p>Outsiders roaming the Badlands. Family-driven tech scavengers who live free beyond the city’s grip.</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-button next" aria-label="Next faction">&#8250;</button>
+        <div class="carousel-dots"></div>
+    </div>
+</section>
 
     <!-- Screenshots Section -->
     <section class="screenshots" id="screenshots">
@@ -259,6 +306,69 @@
             <p>&copy; 2025 Cyberpunk 2077. All rights reserved. Made with 💻 in Night City</p>
         </div>
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const track = document.querySelector('.factions-track');
+            const cards = document.querySelectorAll('.faction-card');
+            const prevButton = document.querySelector('.carousel-button.prev');
+            const nextButton = document.querySelector('.carousel-button.next');
+            const dotsContainer = document.querySelector('.carousel-dots');
+            let currentIndex = 0;
+
+            // Create dots for each card
+            cards.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.classList.add('carousel-dot');
+                if (index === 0) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(index));
+                dotsContainer.appendChild(dot);
+            });
+
+            const dots = document.querySelectorAll('.carousel-dot');
+
+            function getCardWidth() {
+                const card = cards[0];
+                const style = window.getComputedStyle(card);
+                return card.offsetWidth + 
+                       parseInt(style.marginLeft || 0) + 
+                       parseInt(style.marginRight || 0);
+            }
+
+            function updateCarousel() {
+                const cardWidth = getCardWidth();
+                const offset = -currentIndex * cardWidth;
+                track.style.transform = `translateX(${offset}px)`;
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentIndex);
+                });
+            }
+
+            function goToSlide(index) {
+                currentIndex = index;
+                if (currentIndex >= cards.length) currentIndex = 0;
+                if (currentIndex < 0) currentIndex = cards.length - 1;
+                updateCarousel();
+            }
+
+            prevButton.addEventListener('click', () => goToSlide(currentIndex - 1));
+            nextButton.addEventListener('click', () => goToSlide(currentIndex + 1));
+
+            let autoScroll = setInterval(() => goToSlide(currentIndex + 1), 5000);
+
+            const carousel = document.querySelector('.factions-carousel');
+            carousel.addEventListener('mouseenter', () => clearInterval(autoScroll));
+            carousel.addEventListener('mouseleave', () => {
+                autoScroll = setInterval(() => goToSlide(currentIndex + 1), 5000);
+            });
+
+            window.addEventListener('resize', () => {
+                updateCarousel();
+            });
+
+            // Initial update
+            updateCarousel();
+        });
+</script>
 
 </body>
 </html>

@@ -1,40 +1,54 @@
+<script>
 document.addEventListener('DOMContentLoaded', () => {
-    const header = document.querySelector('header');
-    const scrollThreshold = 50;
-    const hamburger = document.querySelector('.hamburger');
-    const nav = document.querySelector('nav');
-    const navLinks = document.querySelectorAll('nav ul li a');
+    const track = document.querySelector('.factions-track');
+    const cards = document.querySelectorAll('.faction-card');
+    const prevButton = document.querySelector('.carousel-button.prev');
+    const nextButton = document.querySelector('.carousel-button.next');
+    const dotsContainer = document.querySelector('.carousel-dots');
+    let currentIndex = 0;
+    const cardWidth = cards[0].offsetWidth + 32; // Including gap
 
-    // Toggle mobile menu
-    hamburger.addEventListener('click', () => {
-        nav.classList.toggle('active');
-        const isExpanded = hamburger.getAttribute('aria-expanded') === 'true';
-        hamburger.setAttribute('aria-expanded', !isExpanded);
+    // Create dots
+    cards.forEach((_, index) => {
+        const dot = document.createElement('div');
+        dot.classList.add('carousel-dot');
+        if (index === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => goToSlide(index));
+        dotsContainer.appendChild(dot);
     });
 
-    // Close mobile menu when clicking nav links
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            nav.classList.remove('active');
-            hamburger.setAttribute('aria-expanded', 'false');
+    const dots = document.querySelectorAll('.carousel-dot');
+
+    function updateCarousel() {
+        track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+        dots.forEach((dot, index) => {
+            dot.classList.toggle('active', index === currentIndex);
         });
+    }
+
+    function goToSlide(index) {
+        currentIndex = index;
+        if (currentIndex >= cards.length) currentIndex = 0;
+        if (currentIndex < 0) currentIndex = cards.length - 1;
+        updateCarousel();
+    }
+
+    prevButton.addEventListener('click', () => goToSlide(currentIndex - 1));
+    nextButton.addEventListener('click', () => goToSlide(currentIndex + 1));
+
+    // Optional: Auto-scroll
+    let autoScroll = setInterval(() => goToSlide(currentIndex + 1), 5000);
+
+    // Pause auto-scroll on hover
+    document.querySelector('.factions-carousel').addEventListener('mouseenter', () => clearInterval(autoScroll));
+    document.querySelector('.factions-carousel').addEventListener('mouseleave', () => {
+        autoScroll = setInterval(() => goToSlide(currentIndex + 1), 5000);
     });
 
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!nav.contains(e.target) && !hamburger.contains(e.target) && nav.classList.contains('active')) {
-            nav.classList.remove('active');
-            hamburger.setAttribute('aria-expanded', 'false');
-        }
-    });
-
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > scrollThreshold) {
-            header.style.background = 'linear-gradient(135deg, rgba(10, 10, 18, 0.95), rgba(20, 20, 30, 0.95))';
-            header.style.boxShadow = '0 0 30px var(--glow-color)';
-        } else {
-            header.style.background = 'linear-gradient(135deg, rgba(10, 10, 18, 0.8), rgba(20, 20, 30, 0.8))';
-            header.style.boxShadow = '0 0 20px var(--glow-color)';
-        }
+    // Update carousel on window resize
+    window.addEventListener('resize', () => {
+        const newCardWidth = cards[0].offsetWidth + 32;
+        track.style.transform = `translateX(-${currentIndex * newCardWidth}px)`;
     });
 });
+</script>
