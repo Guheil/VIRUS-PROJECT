@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize AOS (Animate On Scroll)
+    AOS.init({
+        duration: 800,
+        easing: 'cubic-bezier(0.2, 1, 0.3, 1)',
+        once: false,
+        mirror: true,
+        anchorPlacement: 'top-bottom',
+        disable: 'mobile'
+    });
+    
     // Header scrolling effect
     const header = document.querySelector('header');
     const scrollThreshold = 50;
