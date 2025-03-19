@@ -1028,6 +1028,17 @@
             color: var(--text-color);
             opacity: 0.7;
         }
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px;
+            z-index: 1001;
+        }
+
         
         /* Responsive Styles */
         @media (max-width: 768px) {
@@ -1037,25 +1048,44 @@
             }
             
             nav {
-                width: 100%;
-                display: none;
+                width: 80%;
+                position: fixed;
+                top: 0;
+                right: -100%;
+                height: 100vh;
+                background: linear-gradient(135deg, rgba(10, 10, 18, 0.95), rgba(20, 20, 30, 0.95));
+                padding-top: 80px;
+                transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+                z-index: 1000;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
             }
             
-            nav.active {
-                display: block;
-            }
-            
-            nav ul {
-                flex-direction: column;
-                width: 100%;
-                padding: 1rem 0;
-            }
-            
-            nav ul li {
-                margin: 0.5rem 0;
-                width: 100%;
-                text-align: center;
-            }
+             nav.active {
+                    right: 0;
+                }
+                
+                nav ul {
+                    flex-direction: column;
+                    width: 100%;
+                    padding: 0;
+                }
+                
+                nav ul li {
+                    margin: 0;
+                    width: 100%;
+                    text-align: center;
+                }
+                
+                nav ul li a {
+                    display: block;
+                    padding: 1rem 0;
+                    font-size: 1.2rem;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                }
+                
+                nav ul li a:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                }
             
             .hamburger {
                 display: block;
