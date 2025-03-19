@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Spaceship body -->
+  <path d="M50 10 L70 70 L50 60 L30 70 Z" fill="#4287f5" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- Cockpit -->
+  <circle cx="50" cy="35" r="10" fill="#a0c8ff" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Engine glow -->
+  <circle cx="50" cy="65" r="8" fill="#ffcc00" opacity="0.8">
+    <animate attributeName="opacity" values="0.5;0.8;0.5" dur="1s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Wing details -->
+  <path d="M50 30 L75 65 L70 70" fill="none" stroke="#ffffff" stroke-width="1"/>
+  <path d="M50 30 L25 65 L30 70" fill="none" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Weapon mounts -->
+  <rect x="30" y="40" width="5" height="10" fill="#2a5298" stroke="#ffffff" stroke-width="1"/>
+  <rect x="65" y="40" width="5" height="10" fill="#2a5298" stroke="#ffffff" stroke-width="1"/>
+</svg>

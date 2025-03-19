@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Enemy ship body -->
+  <path d="M30 30 L50 20 L70 30 L60 60 L40 60 Z" fill="#ff4242" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- Eye/sensor -->
+  <circle cx="50" cy="35" r="8" fill="#ffcc00" stroke="#ffffff" stroke-width="1">
+    <animate attributeName="fill" values="#ffcc00;#ff0000;#ffcc00" dur="2s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Wing details -->
+  <path d="M30 30 L20 50 L40 60" fill="#aa0000" stroke="#ffffff" stroke-width="1"/>
+  <path d="M70 30 L80 50 L60 60" fill="#aa0000" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Weapon ports -->
+  <rect x="45" y="50" width="10" height="5" fill="#880000" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- Engine glow -->
+  <circle cx="50" cy="60" r="5" fill="#ff7700" opacity="0.7">
+    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="0.8s" repeatCount="indefinite" />
+  </circle>
+</svg>

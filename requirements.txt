@@ -1,3 +1,4 @@
 pygame>=2.5.2
 python-vlc>=3.0.20123
 pyinstaller>=5.13.0
+cairosvg>=2.7.1
