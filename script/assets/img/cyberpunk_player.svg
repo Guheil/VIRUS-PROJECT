@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Cyberpunk Soldier Body -->
+  <path d="M50 20 L60 35 L60 70 L40 70 L40 35 Z" fill="#1e90ff" stroke="#00ffff" stroke-width="2"/>
+  
+  <!-- Helmet/Head -->
+  <path d="M40 30 L60 30 L65 20 L35 20 Z" fill="#0066cc" stroke="#00ffff" stroke-width="1"/>
+  
+  <!-- Visor -->
+  <path d="M42 22 L58 22 L56 28 L44 28 Z" fill="#00ffff" stroke="#ffffff" stroke-width="1">
+    <animate attributeName="fill" values="#00ffff;#00ccff;#00ffff" dur="2s" repeatCount="indefinite" />
+  </path>
+  
+  <!-- Armor Details -->
+  <path d="M40 40 L60 40" stroke="#00ffff" stroke-width="1"/>
+  <path d="M40 50 L60 50" stroke="#00ffff" stroke-width="1"/>
+  <path d="M40 60 L60 60" stroke="#00ffff" stroke-width="1"/>
+  
+  <!-- Arms -->
+  <path d="M40 35 L30 55 L35 65" fill="none" stroke="#00ffff" stroke-width="2"/>
+  <path d="M60 35 L70 55 L65 65" fill="none" stroke="#00ffff" stroke-width="2"/>
+  
+  <!-- Gun/Weapon -->
+  <rect x="65" y="50" width="15" height="5" fill="#444444" stroke="#00ffff" stroke-width="1"/>
+  
+  <!-- Cybernetic Enhancements -->
+  <circle cx="35" cy="45" r="3" fill="#00ffff">
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="65" cy="45" r="3" fill="#00ffff">
+    <animate attributeName="opacity" values="0.5;1;0.5" dur="1s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Legs -->
+  <path d="M45 70 L40 90" fill="none" stroke="#0066cc" stroke-width="3"/>
+  <path d="M55 70 L60 90" fill="none" stroke="#0066cc" stroke-width="3"/>
+</svg>

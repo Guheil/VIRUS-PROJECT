@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Cyber Zombie Boss Body - Larger than regular zombie -->
+  <path d="M35 20 L65 20 L70 75 L30 75 Z" fill="#4d8061" stroke="#2e4c3a" stroke-width="2"/>
+  
+  <!-- Cyber Zombie Head -->
+  <circle cx="50" cy="15" r="12" fill="#4d8061" stroke="#2e4c3a" stroke-width="2"/>
+  
+  <!-- Cybernetic Helmet/Mask -->
+  <path d="M38 10 L62 10 L65 20 L35 20 Z" fill="#333333" stroke="#00ffff" stroke-width="1"/>
+  <rect x="42" y="10" width="16" height="5" fill="#222222" stroke="#00ffff" stroke-width="1"/>
+  
+  <!-- Glowing Eyes - Brighter and more menacing -->
+  <circle cx="43" cy="15" r="3" fill="#ff0000">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="1s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="57" cy="15" r="3" fill="#ff0000">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="1s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Cyber Mouth with metal jaw -->
+  <path d="M40 22 L60 22" stroke="#00ffff" stroke-width="1"/>
+  <path d="M42 20 L45 24 L50 20 L55 24 L58 20" fill="none" stroke="#00ffff" stroke-width="1"/>
+  
+  <!-- Cybernetic Arms with Guns -->
+  <!-- Left Arm and Gun -->
+  <path d="M35 35 L20 45" fill="none" stroke="#4d8061" stroke-width="4"/>
+  <rect x="10" y="42" width="15" height="6" rx="1" fill="#333333" stroke="#00ffff" stroke-width="1"/>
+  <rect x="5" y="43" width="5" height="4" rx="1" fill="#222222" stroke="#00ffff" stroke-width="1"/>
+  <circle cx="12" cy="45" r="2" fill="#ff0000" opacity="0.7">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="0.5s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Right Arm and Gun -->
+  <path d="M65 35 L80 45" fill="none" stroke="#4d8061" stroke-width="4"/>
+  <rect x="75" y="42" width="15" height="6" rx="1" fill="#333333" stroke="#00ffff" stroke-width="1"/>
+  <rect x="90" y="43" width="5" height="4" rx="1" fill="#222222" stroke="#00ffff" stroke-width="1"/>
+  <circle cx="88" cy="45" r="2" fill="#ff0000" opacity="0.7">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="0.5s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Legs with Cybernetic Enhancements -->
+  <path d="M40 75 L35 95" fill="none" stroke="#4d8061" stroke-width="4"/>
+  <path d="M60 75 L65 95" fill="none" stroke="#4d8061" stroke-width="4"/>
+  <rect x="32" y="85" width="8" height="10" rx="2" fill="#333333" stroke="#00ffff" stroke-width="1"/>
+  <rect x="60" y="85" width="8" height="10" rx="2" fill="#333333" stroke="#00ffff" stroke-width="1"/>
+  
+  <!-- Cybernetic Implants/Enhancements -->
+  <circle cx="35" cy="35" r="4" fill="#00ffff" opacity="0.7">
+    <animate attributeName="opacity" values="0.4;0.9;0.4" dur="1.5s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="65" cy="35" r="4" fill="#00ffff" opacity="0.7">
+    <animate attributeName="opacity" values="0.4;0.9;0.4" dur="1.5s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="50" cy="50" r="5" fill="#00ffff" opacity="0.7">
+    <animate attributeName="opacity" values="0.4;0.9;0.4" dur="1.5s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Shoulder Mounted Weapon System -->
+  <rect x="40" y="25" width="6" height="8" rx="1" fill="#333333" stroke="#ff00ff" stroke-width="1"/>
+  <rect x="54" y="25" width="6" height="8" rx="1" fill="#333333" stroke="#ff00ff" stroke-width="1"/>
+  <circle cx="43" cy="27" r="2" fill="#ff00ff" opacity="0.7">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="57" cy="27" r="2" fill="#ff00ff" opacity="0.7">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="2s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Energy Core -->
+  <circle cx="50" cy="60" r="6" fill="#ff00ff" opacity="0.5">
+    <animate attributeName="r" values="5;7;5" dur="2s" repeatCount="indefinite" />
+    <animate attributeName="opacity" values="0.5;0.8;0.5" dur="2s" repeatCount="indefinite" />
+  </circle>
+</svg>

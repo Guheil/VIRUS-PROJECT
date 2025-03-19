@@ -90,7 +90,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         # Try to load SVG, fall back to simple shape if it fails
-        svg_image = load_svg('player.svg', 40, 40)
+        svg_image = load_svg('cyberpunk_player.svg', 40, 40)
         if svg_image:
             self.image = svg_image
         else:
@@ -142,11 +142,11 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         # Try to load SVG, fall back to simple shape if it fails
-        svg_image = load_svg('enemy.svg', 40, 40)  # Increased from 30x30
+        svg_image = load_svg('zombie_enemy.svg', 40, 40)  # Cyberpunk zombie enemy
         if svg_image:
             self.image = svg_image
         else:
-            self.image = pygame.Surface((30, 30))  # Increased from 20x20
+            self.image = pygame.Surface((30, 30))
             self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.spawn_enemy()
@@ -203,11 +203,11 @@ class Boss(Enemy):
     def __init__(self):
         super().__init__()
         # Try to load SVG, fall back to simple shape if it fails
-        svg_image = load_svg('boss.svg', 50, 50)
+        svg_image = load_svg('cyber_zombie_boss.svg', 60, 60)  # Bigger cyber zombie boss with guns
         if svg_image:
             self.image = svg_image
         else:
-            self.image = pygame.Surface((50, 50))
+            self.image = pygame.Surface((60, 60))
             self.image.fill(PURPLE)
         self.health = 300  # Increased health
         self.max_health = 300
@@ -455,17 +455,24 @@ class Bullet(pygame.sprite.Sprite):
 
 class Background:
     def __init__(self):
-        self.bg_image = pygame.Surface((WIDTH, HEIGHT))
-        for i in range(100):
-            x = random.randint(0, WIDTH)
-            y = random.randint(0, HEIGHT)
-            pygame.draw.circle(self.bg_image, GRAY, (x, y), 1)
+        # Try to load neon field background SVG
+        self.bg_image = load_svg('neon_field_background.svg', WIDTH, HEIGHT)
+        
+        # Fallback to simple star field if SVG loading fails
+        if self.bg_image is None:
+            self.bg_image = pygame.Surface((WIDTH, HEIGHT))
+            self.bg_image.fill(BLACK)
+            for i in range(100):
+                x = random.randint(0, WIDTH)
+                y = random.randint(0, HEIGHT)
+                pygame.draw.circle(self.bg_image, GRAY, (x, y), 1)
+        
         self.y1 = 0
         self.y2 = -HEIGHT
 
     def update(self):
-        self.y1 += 1
-        self.y2 += 1
+        self.y1 += 0.4 # Slower scrolling for cyberpunk city
+        self.y2 += 0.4
         if self.y1 > HEIGHT:
             self.y1 = -HEIGHT
         if self.y2 > HEIGHT:

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Zombie Body -->
+  <path d="M45 25 L55 25 L60 70 L40 70 Z" fill="#4d8061" stroke="#2e4c3a" stroke-width="2"/>
+  
+  <!-- Zombie Head -->
+  <circle cx="50" cy="20" r="10" fill="#4d8061" stroke="#2e4c3a" stroke-width="2"/>
+  
+  <!-- Glowing Eyes -->
+  <circle cx="45" cy="18" r="2" fill="#ff0000">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="55" cy="18" r="2" fill="#ff0000">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Mouth -->
+  <path d="M45 25 L55 25" stroke="#2e4c3a" stroke-width="1"/>
+  <path d="M46 23 L48 27 L50 23 L52 27 L54 23" fill="none" stroke="#2e4c3a" stroke-width="1"/>
+  
+  <!-- Arms -->
+  <path d="M45 35 L30 50 L25 65" fill="none" stroke="#4d8061" stroke-width="3"/>
+  <path d="M55 35 L70 50 L75 65" fill="none" stroke="#4d8061" stroke-width="3"/>
+  
+  <!-- Legs -->
+  <path d="M45 70 L40 90" fill="none" stroke="#4d8061" stroke-width="3"/>
+  <path d="M55 70 L60 90" fill="none" stroke="#4d8061" stroke-width="3"/>
+  
+  <!-- Cybernetic Implants/Infection -->
+  <circle cx="40" cy="40" r="3" fill="#00ff00" opacity="0.7">
+    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="1.5s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="60" cy="40" r="3" fill="#00ff00" opacity="0.7">
+    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="1.5s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="50" cy="55" r="4" fill="#00ff00" opacity="0.7">
+    <animate attributeName="opacity" values="0.4;0.7;0.4" dur="1.5s" repeatCount="indefinite" />
+  </circle>
+  
+  <!-- Torn Clothing -->
+  <path d="M45 50 L55 50" stroke="#2e4c3a" stroke-width="1" stroke-dasharray="2,2"/>
+  <path d="M45 60 L55 60" stroke="#2e4c3a" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>
