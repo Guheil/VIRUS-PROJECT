@@ -363,6 +363,46 @@
     box-shadow: 0 0 20px var(--glow-color);
 }
 
+.faction-card {
+    background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('https://picsum.photos/400/300');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.8;
+    padding: 2rem;
+    border-radius: 10px;
+    border: 2px solid var(--primary-color);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.faction-card:hover {
+    opacity: 1;
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+.faction-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--primary-color), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.faction-card:hover::before {
+    opacity: 0.2;
+}
+
+.faction-card h3, .faction-card p {
+    position: relative;
+    z-index: 1;
+}
+
 .carousel-track {
     display: flex;
     transition: transform 0.5s ease-in-out;
@@ -1126,171 +1166,197 @@
             animation: pulse 2s infinite;
         }
 
+/* Factions Carousel Styles */
 .factions {
-    padding: 4rem 1rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    background: var(--background-dark);
-}
-
-.factions-carousel {
+    padding: 5rem 0;
+    background-color: #050718;
     position: relative;
     overflow: hidden;
-    margin-top: 2rem;
+}
+
+.carousel-container {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 0 1rem;
 }
 
-.factions-container {
+.carousel-wrapper {
+    position: relative;
     overflow: hidden;
-    margin: 0 -1rem;
+    padding: 2rem 0;
 }
 
-.factions-track {
+.carousel-slides {
+    position: relative;
     display: flex;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    padding: 1rem;
+    width: 100%;
+    height: 350px;
+}
+
+.carousel-slide {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transform: scale(0.85);
+    transition: all 0.5s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+.carousel-slide.active {
+    opacity: 1;
+    transform: scale(1);
+    z-index: 5;
+    pointer-events: auto;
+}
+
+.carousel-slide.prev {
+    opacity: 0.3;
+    transform: translateX(-70%) scale(0.85);
+    z-index: 4;
+}
+
+.carousel-slide.next {
+    opacity: 0.3;
+    transform: translateX(70%) scale(0.85);
+    z-index: 4;
 }
 
 .faction-card {
-    position: relative;
-    min-width: calc(33.333% - 2rem);
-    height: 500px;
-    margin: 0 1rem;
-    border-radius: 15px;
-    overflow: hidden;
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(135deg, rgba(235, 34, 123, 0.2) 0%, rgba(44, 229, 255, 0.2) 100%);
+    border: 1px solid rgba(44, 229, 255, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 0 25px rgba(235, 34, 123, 0.3), 0 0 15px rgba(44, 229, 255, 0.3);
     padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    flex-shrink: 0;
-}
-
-.faction-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-    transition: transform 0.4s ease;
-}
-
-.faction-card:nth-child(1)::before { background-image: url('https://picsum.photos/800/1000?random=1'); }
-.faction-card:nth-child(2)::before { background-image: url('https://picsum.photos/800/1000?random=2'); }
-.faction-card:nth-child(3)::before { background-image: url('https://picsum.photos/800/1000?random=3'); }
-.faction-card:nth-child(4)::before { background-image: url('https://picsum.photos/800/1000?random=4'); }
-.faction-card:nth-child(5)::before { background-image: url('https://picsum.photos/800/1000?random=5'); }
-.faction-card:nth-child(6)::before { background-image: url('https://picsum.photos/800/1000?random=6'); }
-
-.faction-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.1) 100%);
-    z-index: 1;
+    max-width: 700px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
 .faction-card:hover {
-    transform: translateY(-10px) scale(1.02);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
-}
-
-.faction-card:hover::before {
-    transform: scale(1.1);
+    transform: translateY(-5px);
+    box-shadow: 0 0 35px rgba(235, 34, 123, 0.5), 0 0 25px rgba(44, 229, 255, 0.5);
 }
 
 .faction-icon {
-    position: absolute;
-    z-index: 2;
-    font-size: 3.5rem;
-    color: var(--primary-color);
-    text-shadow: 0 0 10px rgba(var(--primary-color-rgb), 0.5);
-    top: 2rem;
-    left: 2rem;
+    font-size: 3rem;
+    margin-bottom: 1rem;
 }
 
 .faction-card h3 {
-    position: relative;
-    z-index: 2;
-    font-size: 2rem;
+    font-size: 1.5rem;
     margin-bottom: 1rem;
-    color: #fff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color: #f3f3f3;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .faction-card p {
-    position: relative;
-    z-index: 2;
     font-size: 1rem;
-    color: rgba(255, 255, 255, 0.9);
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    line-height: 1.4;
-    margin: 0;
+    color: #b8b8b8;
+    line-height: 1.5;
 }
 
-.carousel-button {
+.carousel-control {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(10, 10, 18, 0.8);
-    border: 2px solid var(--primary-color);
-    color: var(--primary-color);
-    font-size: 2rem;
-    padding: 0.5rem 1rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    border: 2px solid rgba(44, 229, 255, 0.5);
+    color: #fff;
+    font-size: 1.5rem;
     cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s ease;
-    z-index: 3;
 }
 
-.carousel-button:hover {
-    background: var(--primary-color);
-    color: var(--background-dark);
-    box-shadow: 0 0 15px var(--glow-color);
+.carousel-control:hover {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: #eb227b;
 }
 
-.carousel-button.prev {
-    left: 1rem;
+.carousel-control.prev {
+    left: 10px;
 }
 
-.carousel-button.next {
-    right: 1rem;
+.carousel-control.next {
+    right: 10px;
 }
 
-.carousel-dots {
+.carousel-indicators {
     position: absolute;
-    bottom: -2rem;
+    bottom: 1rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 0.5rem;
+    gap: 10px;
+    z-index: 10;
 }
 
-.carousel-dot {
-    width: 10px;
-    height: 10px;
+.indicator {
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    background: var(--text-color);
-    opacity: 0.5;
+    background-color: rgba(255, 255, 255, 0.3);
+    border: none;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
-.carousel-dot.active {
-    opacity: 1;
-    background: var(--primary-color);
-    box-shadow: 0 0 10px var(--glow-color);
+.indicator.active {
+    background-color: #eb227b;
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(235, 34, 123, 0.7);
 }
 
-/* Responsive adjustments */
+/* Media queries for responsiveness */
 @media (max-width: 768px) {
+    .carousel-slide.prev,
+    .carousel-slide.next {
+        display: none;
+    }
+    
+    .carousel-wrapper {
+        padding: 1rem 0;
+    }
+    
     .faction-card {
-        min-width: 300px;
+        padding: 1.5rem;
     }
 }
+
+@media (max-width: 480px) {
+    .carousel-control {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .faction-card h3 {
+        font-size: 1.2rem;
+    }
+    
+    .faction-card p {
+        font-size: 0.9rem;
+    }
+}
+.carousel-slide:nth-child(1) .faction-card { background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://picsum.photos/seed/maelstrom/800/600') center/cover; }
+.carousel-slide:nth-child(2) .faction-card { background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://picsum.photos/seed/voodoo/800/600') center/cover; }
+.carousel-slide:nth-child(3) .faction-card { background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://picsum.photos/seed/arasaka/800/600') center/cover; }
+.carousel-slide:nth-child(4) .faction-card { background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://picsum.photos/seed/6thstreet/800/600') center/cover; }
+.carousel-slide:nth-child(5) .faction-card { background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://picsum.photos/seed/tyger/800/600') center/cover; }
+.carousel-slide:nth-child(6) .faction-card { background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://picsum.photos/seed/tyger/800/600') center/cover; }
