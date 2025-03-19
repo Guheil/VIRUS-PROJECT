@@ -6,13 +6,17 @@
         }
         
         :root {
-            --primary-color: #00f3ff;
-            --secondary-color: #ff00e6;
-            --background-dark: #0a0a12;
-            --background-light: #14141e;
-            --text-color: #e0e0e0;
-            --accent-color: #ff5722;
-            --glow-color: rgba(0, 243, 255, 0.7);
+--primary-color: #ffcc00;    /* Cyberpunk Yellow */
+--secondary-color: #00eaff;  /* Neon Cyan */
+--background-dark: #0a0a0a;  /* Deep Black */
+--background-light: #1b1b1b; /* Dark Gray */
+--text-color: #ffffff;       /* Bright White */
+--accent-color: #ff0055;     /* Electric Magenta */
+--glow-color: rgba(255, 204, 0, 0.7);  /* Glow Yellow */
+
+
+
+
         }
         
         /* Cyberpunk Fonts */
