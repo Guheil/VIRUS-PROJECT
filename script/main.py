@@ -219,6 +219,43 @@ class Boss(Enemy):
         self.phase = 1  # Boss phases for difficulty progression
         self.phase_threshold = self.max_health * 0.5  # Phase 2 at 50% health
         
+        # Dialogue system variables
+        self.dialogue_timer = 0
+        self.current_dialogue = ""
+        self.dialogue_duration = 180  # How long dialogue stays on screen (3 seconds at 60 FPS)
+        self.dialogue_color = YELLOW
+        self.dialogue_font = pygame.font.Font(None, 28)  # Use default font
+        
+        # Dialogue lists for different scenarios
+        self.taunt_dialogues = [
+            "Is that all you've got?",
+            "You call that fighting?",
+            "I've seen better aim from a blind rat!",
+            "Running won't save you!",
+            "Your skills are pathetic!"
+        ]
+        
+        self.phase_change_dialogues = [
+            "Now you've made me angry!",
+            "Prepare for your doom!",
+            "No more games!",
+            "Time to end this!"
+        ]
+        
+        self.homing_dialogues = [
+            "There's nowhere to hide!",
+            "My missiles will find you!",
+            "You can't escape these!",
+            "Heat seekers, locked on target!"
+        ]
+        
+        self.laser_dialogues = [
+            "Dodge this if you can!",
+            "Burn in my laser grid!",
+            "Let's light up the room!",
+            "Feel the heat!"
+        ]
+        
         # Start playing boss music when boss is spawned
         try:
             boss_music_path = os.path.join(os.path.dirname(__file__), 'assets', 'audio', 'boss_music.mp3')
@@ -228,6 +265,12 @@ class Boss(Enemy):
             print("Boss music started")
         except Exception as e:
             print(f"Error playing boss music: {e}")
+            
+    def show_dialogue(self, dialogue_list):
+        # Only set new dialogue if no dialogue is currently showing
+        if self.dialogue_timer <= 0:
+            self.current_dialogue = random.choice(dialogue_list)
+            self.dialogue_timer = self.dialogue_duration
 
     def update(self):
         player = pygame.sprite.Group.sprites(all_sprites)[0]
@@ -242,6 +285,10 @@ class Boss(Enemy):
             self.rect.x += dx * self.speed
             self.rect.y += dy * self.speed
 
+        # Update dialogue timer
+        if self.dialogue_timer > 0:
+            self.dialogue_timer -= 1
+
         self.attack_timer += 1
         if self.attack_timer >= 90:  # Reduced timer for more frequent attacks
             # Update phase based on health
@@ -249,9 +296,15 @@ class Boss(Enemy):
                 self.phase = 2
                 self.speed = 2.0  # Faster in phase 2
                 self.bullet_spread = 16  # More bullets in phase 2
+                # Show phase change dialogue
+                self.show_dialogue(self.phase_change_dialogues)
             
             # Different attack patterns
             if self.attack_pattern == 0:
+                # Show random taunt dialogue occasionally
+                if random.random() < 0.3:  # 30% chance to taunt
+                    self.show_dialogue(self.taunt_dialogues)
+                    
                 # Circular bullet pattern
                 for i in range(self.bullet_spread):
                     angle = (2 * math.pi * i) / self.bullet_spread
@@ -343,6 +396,9 @@ class Boss(Enemy):
                 
                 # Add homing bullets in phase 2
                 if random.random() < 0.5:  # 50% chance for homing bullets
+                    # Show homing missile dialogue
+                    self.show_dialogue(self.homing_dialogues)
+                    
                     for _ in range(2):  # 2 homing bullets
                         bullet = Bullet(self.rect.centerx, self.rect.centery,
                                       player.rect.centerx, player.rect.centery,
@@ -352,6 +408,9 @@ class Boss(Enemy):
             
             # Add a special laser attack pattern in phase 2
             if self.phase == 2 and self.attack_pattern == 3 and random.random() < 0.7:  # 70% chance in phase 2
+                # Show laser attack dialogue
+                self.show_dialogue(self.laser_dialogues)
+                
                 # Create a cross-shaped laser pattern
                 for angle in [0, math.pi/4, math.pi/2, 3*math.pi/4, math.pi, 5*math.pi/4, 3*math.pi/2, 7*math.pi/4]:
                     for distance in range(1, 5):  # Multiple bullets to form a laser beam
@@ -393,7 +452,7 @@ class Bullet(pygame.sprite.Sprite):
         self.trail_colors = [WHITE, YELLOW, RED] if is_player_bullet else [YELLOW, RED, PURPLE]
         
         # For homing bullets
-        self.homing_strength = 0.05
+        self.homing_strength = 0.5
         self.target_player = not is_player_bullet
         
         # Add lifespan for homing bullets (4 seconds at 60 FPS)
@@ -434,8 +493,8 @@ class Bullet(pygame.sprite.Sprite):
                         self.dx /= mag
                         self.dy /= mag
                         # Make homing bullets faster but still dodgeable
-                        self.dx *= 1.5
-                        self.dy *= 1.5
+                        self.dx *= 5.5
+                        self.dy *= 5.5
         
         self.rect.x += self.dx
         self.rect.y += self.dy
@@ -793,6 +852,27 @@ while running:
         # Draw score
         score_text = font_medium.render(f'Score: {player.score}', True, WHITE)
         screen.blit(score_text, (10, 40))
+        
+        # Draw boss dialogue if active
+        if boss_active:
+            # Find the boss instance
+            boss_instance = None
+            for enemy in enemies:
+                if isinstance(enemy, Boss):
+                    boss_instance = enemy
+                    break
+                    
+            if boss_instance and boss_instance.dialogue_timer > 0 and boss_instance.current_dialogue:
+                # Create a semi-transparent background for the dialogue
+                dialogue_surface = pygame.Surface((WIDTH - 100, 40))
+                dialogue_surface.set_alpha(180)  # Semi-transparent
+                dialogue_surface.fill(BLACK)
+                screen.blit(dialogue_surface, (50, HEIGHT - 100))
+                
+                # Render the dialogue text
+                dialogue_text = boss_instance.dialogue_font.render(boss_instance.current_dialogue, True, boss_instance.dialogue_color)
+                dialogue_rect = dialogue_text.get_rect(center=(WIDTH // 2, HEIGHT - 80))
+                screen.blit(dialogue_text, dialogue_rect)
 
     # Update display for all game states
     pygame.display.flip()
