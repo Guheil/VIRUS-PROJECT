@@ -105,6 +105,11 @@ class Player(pygame.sprite.Sprite):
         self.invulnerable = False
         self.invulnerable_timer = 0
         self.shoot_cooldown = 0
+        
+        # Power-up attributes
+        self.active_powerup = None
+        self.powerup_timer = 0
+        self.powerup_duration = 600  # 10 seconds at 60 FPS
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -128,15 +133,87 @@ class Player(pygame.sprite.Sprite):
         # Handle shooting cooldown
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
+            
+        # Handle burst fire continuation if active
+        if hasattr(self, 'burst_count') and self.burst_count > 0 and self.active_powerup == "burstfire":
+            self.burst_timer += 1
+            if self.burst_timer >= 5:  # Fire next burst bullet after 5 frames
+                bullet = Bullet(self.rect.centerx, self.rect.centery, 
+                              self.burst_target_x, self.burst_target_y, 
+                              is_player_bullet=True)
+                all_sprites.add(bullet)
+                bullets.add(bullet)
+                if shoot_sound:
+                    shoot_sound.play()
+                
+                self.burst_count -= 1
+                self.burst_timer = 0
     
     def shoot(self, target_x, target_y):
         if self.shoot_cooldown <= 0:
-            bullet = Bullet(self.rect.centerx, self.rect.centery, target_x, target_y, is_player_bullet=True)
-            all_sprites.add(bullet)
-            bullets.add(bullet)
-            if shoot_sound:
-                shoot_sound.play()
-            self.shoot_cooldown = 10  # Cooldown between shots
+            # Different shooting behavior based on active powerup
+            if self.active_powerup == "multishot":
+                # Create two bullets at slightly different angles
+                angle = math.atan2(target_y - self.rect.centery, target_x - self.rect.centerx)
+                spread = math.pi / 12  # 15 degrees spread
+                
+                # Left bullet
+                left_angle = angle - spread
+                left_target_x = self.rect.centerx + math.cos(left_angle) * 100
+                left_target_y = self.rect.centery + math.sin(left_angle) * 100
+                left_bullet = Bullet(self.rect.centerx, self.rect.centery, left_target_x, left_target_y, is_player_bullet=True)
+                all_sprites.add(left_bullet)
+                bullets.add(left_bullet)
+                
+                # Right bullet
+                right_angle = angle + spread
+                right_target_x = self.rect.centerx + math.cos(right_angle) * 100
+                right_target_y = self.rect.centery + math.sin(right_angle) * 100
+                right_bullet = Bullet(self.rect.centerx, self.rect.centery, right_target_x, right_target_y, is_player_bullet=True)
+                all_sprites.add(right_bullet)
+                bullets.add(right_bullet)
+                
+                if shoot_sound:
+                    shoot_sound.play()
+                self.shoot_cooldown = 15  # Slightly longer cooldown for balance
+                
+            elif self.active_powerup == "burstfire":
+                # Create a burst of 3 bullets with a short delay between them
+                bullet = Bullet(self.rect.centerx, self.rect.centery, target_x, target_y, is_player_bullet=True)
+                all_sprites.add(bullet)
+                bullets.add(bullet)
+                
+                # Schedule two more bullets to be fired in quick succession
+                self.burst_count = 2
+                self.burst_target_x = target_x
+                self.burst_target_y = target_y
+                self.burst_timer = 0
+                
+                if shoot_sound:
+                    shoot_sound.play()
+                self.shoot_cooldown = 25  # Longer cooldown for balance
+                
+            elif self.active_powerup == "homing":
+                # Create a homing bullet that tracks enemies
+                bullet = Bullet(self.rect.centerx, self.rect.centery, target_x, target_y, 
+                              is_player_bullet=True, bullet_type="homing")
+                bullet.target_player = False  # Target enemies instead of player
+                all_sprites.add(bullet)
+                bullets.add(bullet)
+                
+                if shoot_sound:
+                    shoot_sound.play()
+                self.shoot_cooldown = 20  # Balanced cooldown
+                
+            else:
+                # Normal shooting behavior
+                bullet = Bullet(self.rect.centerx, self.rect.centery, target_x, target_y, is_player_bullet=True)
+                all_sprites.add(bullet)
+                bullets.add(bullet)
+                
+                if shoot_sound:
+                    shoot_sound.play()
+                self.shoot_cooldown = 10  # Standard cooldown
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
@@ -431,6 +508,54 @@ class Boss(Enemy):
             self.attack_pattern = (self.attack_pattern + 1) % 4  # Now 4 patterns
             self.attack_timer = 0
 
+class PowerUp(pygame.sprite.Sprite):
+    def __init__(self, x, y, powerup_type):
+        super().__init__()
+        self.powerup_type = powerup_type
+        
+        # Load the appropriate SVG based on powerup type
+        if powerup_type == "multishot":
+            svg_image = load_svg('multishot_powerup.svg', 30, 30)
+            self.color = (255, 0, 255)  # Purple
+        elif powerup_type == "burstfire":
+            svg_image = load_svg('burstfire_powerup.svg', 30, 30)
+            self.color = (255, 153, 0)  # Orange
+        elif powerup_type == "homing":
+            svg_image = load_svg('homing_powerup.svg', 30, 30)
+            self.color = (0, 255, 0)  # Green
+        else:  # Default powerup
+            svg_image = load_svg('powerup.svg', 30, 30)
+            self.color = (0, 255, 255)  # Cyan
+        
+        # Use the SVG if loaded, otherwise create a colored circle
+        if svg_image:
+            self.image = svg_image
+        else:
+            self.image = pygame.Surface((20, 20), pygame.SRCALPHA)
+            pygame.draw.circle(self.image, self.color, (10, 10), 10)
+        
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        
+        # Add floating animation
+        self.float_offset = 0
+        self.float_speed = 0.05
+        self.original_y = y
+        
+        # Add lifespan (10 seconds at 60 FPS)
+        self.lifespan = 600
+        self.life_counter = 0
+    
+    def update(self):
+        # Floating animation
+        self.float_offset = math.sin(pygame.time.get_ticks() * self.float_speed) * 5
+        self.rect.y = self.original_y + self.float_offset
+        
+        # Update lifespan
+        self.life_counter += 1
+        if self.life_counter >= self.lifespan:
+            self.kill()
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, target_x, target_y, is_player_bullet=True, bullet_type="normal"):
         super().__init__()
@@ -593,6 +718,7 @@ background = Background()
 all_sprites = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
+powerups = pygame.sprite.Group()  # New group for power-ups
 background = Background()
 
 # Create player (will be initialized when game starts)
@@ -768,6 +894,13 @@ while running:
 
         # Update all game objects
         all_sprites.update()
+        
+        # Update player powerup timer
+        if player.active_powerup:
+            player.powerup_timer += 1
+            if player.powerup_timer >= player.powerup_duration:
+                player.active_powerup = None
+                player.powerup_timer = 0
 
         # Sort bullets into player and enemy groups
         for bullet in bullets:
@@ -796,6 +929,13 @@ while running:
             else:
                 enemy.health -= 10
                 if enemy.health <= 0:
+                    # Chance to spawn a power-up when enemy is defeated
+                    if random.random() < 0.2:  # 20% chance to spawn a power-up
+                        powerup_type = random.choice(["multishot", "burstfire", "homing"])
+                        powerup = PowerUp(enemy.rect.centerx, enemy.rect.centery, powerup_type)
+                        all_sprites.add(powerup)
+                        powerups.add(powerup)  # Add to powerups group
+                    
                     enemy.kill()
                     player.score += 10
                     score = player.score  # Update global score for game over screen
@@ -816,6 +956,13 @@ while running:
                     # Stop boss music if it's playing
                     pygame.mixer.music.stop()
         
+        # Player collecting power-ups
+        powerup_hits = pygame.sprite.spritecollide(player, powerups, True)
+        for powerup in powerup_hits:
+            player.active_powerup = powerup.powerup_type
+            player.powerup_timer = 0
+            # Visual feedback for power-up collection could be added here
+            
         # Enemies colliding with player
         if not player.invulnerable:
             hits = pygame.sprite.spritecollide(player, enemies, False)
@@ -852,6 +999,29 @@ while running:
         # Draw score
         score_text = font_medium.render(f'Score: {player.score}', True, WHITE)
         screen.blit(score_text, (10, 40))
+        
+        # Draw active power-up status
+        if player.active_powerup:
+            # Calculate remaining time
+            remaining_time = (player.powerup_duration - player.powerup_timer) // 60  # Convert to seconds
+            
+            # Set color based on power-up type
+            if player.active_powerup == "multishot":
+                powerup_color = (255, 0, 255)  # Purple
+                powerup_name = "Multi-Shot"
+            elif player.active_powerup == "burstfire":
+                powerup_color = (255, 153, 0)  # Orange
+                powerup_name = "Burst Fire"
+            elif player.active_powerup == "homing":
+                powerup_color = (0, 255, 0)  # Green
+                powerup_name = "Homing"
+            else:
+                powerup_color = WHITE
+                powerup_name = "Power-Up"
+            
+            # Draw power-up status
+            powerup_text = font_small.render(f'{powerup_name}: {remaining_time}s', True, powerup_color)
+            screen.blit(powerup_text, (10, 70))
         
         # Draw boss dialogue if active
         if boss_active:
