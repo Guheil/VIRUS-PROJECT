@@ -58,6 +58,7 @@ try:
     boss_hit_sound = load_sound('boss_hit.wav')
     boss_shoot_sound = load_sound('boss_shoot.wav')
     player_hit_sound = load_sound('player_hit.wav')
+    powerup_sound = load_sound('powerup.wav')
     
     # Load boss music using pygame.mixer.music for streaming audio
     boss_music_path = os.path.join(os.path.dirname(__file__), 'assets', 'audio', 'boss_music.wav')
@@ -104,7 +105,7 @@ class Player(pygame.sprite.Sprite):
         self.popup_shown = False
         self.invulnerable = False
         self.invulnerable_timer = 0
-        self.shoot_cooldown = 0
+        self.shoot_cooldown = 25
         
         # Power-up attributes
         self.active_powerup = None
@@ -153,7 +154,7 @@ class Player(pygame.sprite.Sprite):
         if self.shoot_cooldown <= 0:
             # Different shooting behavior based on active powerup
             if self.active_powerup == "multishot":
-                # Create two bullets at slightly different angles
+                # Create three bullets at different angles
                 angle = math.atan2(target_y - self.rect.centery, target_x - self.rect.centerx)
                 spread = math.pi / 12  # 15 degrees spread
                 
@@ -164,6 +165,11 @@ class Player(pygame.sprite.Sprite):
                 left_bullet = Bullet(self.rect.centerx, self.rect.centery, left_target_x, left_target_y, is_player_bullet=True)
                 all_sprites.add(left_bullet)
                 bullets.add(left_bullet)
+                
+                # Center bullet (straight ahead)
+                center_bullet = Bullet(self.rect.centerx, self.rect.centery, target_x, target_y, is_player_bullet=True)
+                all_sprites.add(center_bullet)
+                bullets.add(center_bullet)
                 
                 # Right bullet
                 right_angle = angle + spread
@@ -203,7 +209,7 @@ class Player(pygame.sprite.Sprite):
                 
                 if shoot_sound:
                     shoot_sound.play()
-                self.shoot_cooldown = 20  # Balanced cooldown
+                self.shoot_cooldown = 20  # Increased cooldown for balance
                 
             else:
                 # Normal shooting behavior
@@ -213,7 +219,7 @@ class Player(pygame.sprite.Sprite):
                 
                 if shoot_sound:
                     shoot_sound.play()
-                self.shoot_cooldown = 10  # Standard cooldown
+                self.shoot_cooldown = 20  # Increased standard cooldown
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
@@ -286,8 +292,8 @@ class Boss(Enemy):
         else:
             self.image = pygame.Surface((60, 60))
             self.image.fill(PURPLE)
-        self.health = 300  # Increased health
-        self.max_health = 300
+        self.health = 800  # Increased health
+        self.max_health = 800
         self.speed = 1.5
         self.attack_pattern = 0
         self.attack_timer = 0
@@ -365,6 +371,27 @@ class Boss(Enemy):
         # Update dialogue timer
         if self.dialogue_timer > 0:
             self.dialogue_timer -= 1
+            
+        # Randomly spawn powerups during boss fight (20% chance per second at 60 FPS)
+        if random.random() < 0.002:  # Approximately 20% chance per second (0.2/60 ≈ 0.003)
+            # Determine what to spawn: power-up or health potion
+            spawn_type = random.choice(["powerup", "health"])
+            
+            # Calculate a random position near the boss
+            offset_x = random.randint(-150, 150)
+            offset_y = random.randint(-150, 150)
+            spawn_x = max(50, min(WIDTH - 50, self.rect.centerx + offset_x))
+            spawn_y = max(50, min(HEIGHT - 50, self.rect.centery + offset_y))
+            
+            if spawn_type == "powerup":
+                powerup_type = random.choice(["multishot", "burstfire", "homing"])
+                powerup = PowerUp(spawn_x, spawn_y, powerup_type)
+                all_sprites.add(powerup)
+                powerups.add(powerup)
+            else:  # health potion
+                health_potion = HealthPotion(spawn_x, spawn_y)
+                all_sprites.add(health_potion)
+                health_potions.add(health_potion)
 
         self.attack_timer += 1
         if self.attack_timer >= 90:  # Reduced timer for more frequent attacks
@@ -556,6 +583,48 @@ class PowerUp(pygame.sprite.Sprite):
         if self.life_counter >= self.lifespan:
             self.kill()
 
+class HealthPotion(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        # Load the health potion SVG
+        svg_image = load_svg('health_potion.svg', 30, 30)
+        self.color = (255, 0, 0)  # Red for health
+        
+        # Use the SVG if loaded, otherwise create a colored circle
+        if svg_image:
+            self.image = svg_image
+        else:
+            self.image = pygame.Surface((20, 20), pygame.SRCALPHA)
+            pygame.draw.circle(self.image, self.color, (10, 10), 10)
+            # Draw a white cross to indicate health
+            pygame.draw.line(self.image, WHITE, (10, 5), (10, 15), 2)
+            pygame.draw.line(self.image, WHITE, (5, 10), (15, 10), 2)
+        
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        
+        # Add floating animation
+        self.float_offset = 0
+        self.float_speed = 0.05
+        self.original_y = y
+        
+        # Add lifespan (10 seconds at 60 FPS)
+        self.lifespan = 600
+        self.life_counter = 0
+        
+        # Health restoration amount
+        self.heal_amount = 20
+    
+    def update(self):
+        # Floating animation
+        self.float_offset = math.sin(pygame.time.get_ticks() * self.float_speed) * 5
+        self.rect.y = self.original_y + self.float_offset
+        
+        # Update lifespan
+        self.life_counter += 1
+        if self.life_counter >= self.lifespan:
+            self.kill()
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, target_x, target_y, is_player_bullet=True, bullet_type="normal"):
         super().__init__()
@@ -577,7 +646,7 @@ class Bullet(pygame.sprite.Sprite):
         self.trail_colors = [WHITE, YELLOW, RED] if is_player_bullet else [YELLOW, RED, PURPLE]
         
         # For homing bullets
-        self.homing_strength = 0.5
+        self.homing_strength = 0.8 if is_player_bullet else 0.5  # Stronger homing for player bullets
         self.target_player = not is_player_bullet
         
         # Add lifespan for homing bullets (4 seconds at 60 FPS)
@@ -593,33 +662,67 @@ class Bullet(pygame.sprite.Sprite):
                 return
                 
         # Special behavior for homing bullets
-        if self.bullet_type == "homing" and self.target_player:
-            # Find player
-            player = None
-            for sprite in all_sprites:
-                if isinstance(sprite, Player):
-                    player = sprite
-                    break
+        if self.bullet_type == "homing":
+            if self.target_player:
+                # Find player
+                player = None
+                for sprite in all_sprites:
+                    if isinstance(sprite, Player):
+                        player = sprite
+                        break
+                        
+                if player:
+                    # Calculate direction to player
+                    dx = player.rect.centerx - self.rect.centerx
+                    dy = player.rect.centery - self.rect.centery
+                    dist = math.sqrt(dx * dx + dy * dy)
                     
-            if player:
-                # Calculate direction to player
-                dx = player.rect.centerx - self.rect.centerx
-                dy = player.rect.centery - self.rect.centery
-                dist = math.sqrt(dx * dx + dy * dy)
+                    if dist > 0:
+                        # Gradually adjust direction toward player
+                        self.dx = self.dx * (1 - self.homing_strength) + (dx / dist) * self.homing_strength
+                        self.dy = self.dy * (1 - self.homing_strength) + (dy / dist) * self.homing_strength
+                        
+                        # Normalize direction vector
+                        mag = math.sqrt(self.dx * self.dx + self.dy * self.dy)
+                        if mag > 0:
+                            self.dx /= mag
+                            self.dy /= mag
+                            # Make homing bullets faster but still dodgeable
+                            self.dx *= 5.5
+                            self.dy *= 5.5
+            else:
+                # Player's homing bullets targeting enemies
+                # Find closest enemy
+                closest_enemy = None
+                closest_dist = float('inf')
                 
-                if dist > 0:
-                    # Gradually adjust direction toward player
-                    self.dx = self.dx * (1 - self.homing_strength) + (dx / dist) * self.homing_strength
-                    self.dy = self.dy * (1 - self.homing_strength) + (dy / dist) * self.homing_strength
+                for sprite in all_sprites:
+                    if isinstance(sprite, Enemy):
+                        dx = sprite.rect.centerx - self.rect.centerx
+                        dy = sprite.rect.centery - self.rect.centery
+                        dist = math.sqrt(dx * dx + dy * dy)
+                        
+                        if dist < closest_dist:
+                            closest_dist = dist
+                            closest_enemy = sprite
+                
+                if closest_enemy and closest_dist > 0:
+                    # Calculate direction to closest enemy
+                    dx = closest_enemy.rect.centerx - self.rect.centerx
+                    dy = closest_enemy.rect.centery - self.rect.centery
+                    
+                    # Aggressively adjust direction toward enemy with higher homing strength
+                    self.dx = self.dx * (1 - self.homing_strength) + (dx / closest_dist) * self.homing_strength
+                    self.dy = self.dy * (1 - self.homing_strength) + (dy / closest_dist) * self.homing_strength
                     
                     # Normalize direction vector
                     mag = math.sqrt(self.dx * self.dx + self.dy * self.dy)
                     if mag > 0:
                         self.dx /= mag
                         self.dy /= mag
-                        # Make homing bullets faster but still dodgeable
-                        self.dx *= 5.5
-                        self.dy *= 5.5
+                        # Make player's homing bullets faster for better gameplay
+                        self.dx *= 6.0
+                        self.dy *= 6.0
         
         self.rect.x += self.dx
         self.rect.y += self.dy
@@ -718,7 +821,8 @@ background = Background()
 all_sprites = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
-powerups = pygame.sprite.Group()  # New group for power-ups
+powerups = pygame.sprite.Group()  # Group for power-ups
+health_potions = pygame.sprite.Group()  # Group for health potions
 background = Background()
 
 # Create player (will be initialized when game starts)
@@ -771,12 +875,14 @@ font_small = pygame.font.Font(None, 24)
 
 # Function to initialize/reset the game
 def init_game():
-    global player, all_sprites, enemies, bullets, enemy_spawn_timer, boss_active, game_state, score
+    global player, all_sprites, enemies, bullets, powerups, health_potions, enemy_spawn_timer, boss_active, game_state, score
     
     # Clear all sprite groups
     all_sprites.empty()
     enemies.empty()
     bullets.empty()
+    powerups.empty()
+    health_potions.empty()
     
     # Create player
     player = Player()
@@ -929,12 +1035,18 @@ while running:
             else:
                 enemy.health -= 10
                 if enemy.health <= 0:
-                    # Chance to spawn a power-up when enemy is defeated
-                    if random.random() < 0.2:  # 20% chance to spawn a power-up
+                    # Determine what to drop: power-up, health potion, or nothing
+                    drop_roll = random.random()
+                    
+                    if drop_roll < 0.2:  # 20% chance to spawn a power-up
                         powerup_type = random.choice(["multishot", "burstfire", "homing"])
                         powerup = PowerUp(enemy.rect.centerx, enemy.rect.centery, powerup_type)
                         all_sprites.add(powerup)
                         powerups.add(powerup)  # Add to powerups group
+                    elif drop_roll < 0.35:  # 15% chance to spawn a health potion
+                        health_potion = HealthPotion(enemy.rect.centerx, enemy.rect.centery)
+                        all_sprites.add(health_potion)
+                        health_potions.add(health_potion)  # Add to health potions group
                     
                     enemy.kill()
                     player.score += 10
@@ -961,7 +1073,34 @@ while running:
         for powerup in powerup_hits:
             player.active_powerup = powerup.powerup_type
             player.powerup_timer = 0
-            # Visual feedback for power-up collection could be added here
+            
+            # Visual feedback for power-up collection
+            # Create a flash effect
+            flash = pygame.Surface((WIDTH, HEIGHT))
+            flash.fill(powerup.color)
+            flash.set_alpha(50)  # Semi-transparent
+            screen.blit(flash, (0, 0))
+            
+            # Play power-up sound
+            if 'powerup_sound' in globals() and powerup_sound:
+                powerup_sound.play()
+                
+        # Player collecting health potions
+        health_potion_hits = pygame.sprite.spritecollide(player, health_potions, True)
+        for health_potion in health_potion_hits:
+            # Restore player health but don't exceed maximum
+            player.health = min(100, player.health + health_potion.heal_amount)
+            
+            # Visual feedback for health potion collection
+            # Create a flash effect
+            flash = pygame.Surface((WIDTH, HEIGHT))
+            flash.fill(health_potion.color)
+            flash.set_alpha(50)  # Semi-transparent
+            screen.blit(flash, (0, 0))
+            
+            # Play power-up sound for health potion too
+            if 'powerup_sound' in globals() and powerup_sound:
+                powerup_sound.play()
             
         # Enemies colliding with player
         if not player.invulnerable:
