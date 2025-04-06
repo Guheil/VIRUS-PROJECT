@@ -898,7 +898,7 @@ def play_video():
     # VLC setup with fullscreen flags
     instance = vlc.Instance('--reset-plugins-cache', '--fullscreen', '--no-video-title-show')
     player = instance.media_player_new()
-    media = instance.media_new(r"C:\Users\DESKTOP\Desktop\VIRUS-PROJECT\script\assets\vid\win7.mp4")  # Your video path
+    media = instance.media_new(r"C:\Users\xgael\OneDrive\Desktop\da-beyrus\VIRUS-PROJECT\script\assets\vid\win7.mp4")  # Your video path
     player.set_media(media)
     
     # Set fullscreen mode before playing
