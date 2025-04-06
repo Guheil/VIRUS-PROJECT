@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#1a1a1a"/>
+  
+  <!-- Hacker figure -->
+  <g transform="translate(400, 250)">
+    <!-- Hoodie -->
+    <path d="M0,-100 C-80,-100 -120,-50 -120,0 C-120,100 -80,150 0,150 C80,150 120,100 120,0 C120,-50 80,-100 0,-100" fill="#333"/>
+    
+    <!-- Face shadow -->
+    <ellipse cx="0" cy="-20" rx="60" ry="70" fill="#222"/>
+    
+    <!-- Question marks around -->
+    <text x="-150" y="-80" font-family="Arial" font-size="40" fill="#0f0" transform="rotate(-20)">?</text>
+    <text x="120" y="-60" font-family="Arial" font-size="40" fill="#0f0" transform="rotate(15)">?</text>
+    <text x="-180" y="30" font-family="Arial" font-size="40" fill="#0f0" transform="rotate(-10)">?</text>
+    <text x="140" y="50" font-family="Arial" font-size="40" fill="#0f0" transform="rotate(25)">?</text>
+    
+    <!-- Binary code background -->
+    <text x="-300" y="-150" font-family="monospace" font-size="14" fill="#0f0" opacity="0.3">10101010101010101010101010101</text>
+    <text x="-300" y="-130" font-family="monospace" font-size="14" fill="#0f0" opacity="0.3">01010101010101010101010101010</text>
+    <text x="-300" y="-110" font-family="monospace" font-size="14" fill="#0f0" opacity="0.3">10101010101010101010101010101</text>
+    <text x="-300" y="110" font-family="monospace" font-size="14" fill="#0f0" opacity="0.3">10101010101010101010101010101</text>
+    <text x="-300" y="130" font-family="monospace" font-size="14" fill="#0f0" opacity="0.3">01010101010101010101010101010</text>
+    <text x="-300" y="150" font-family="monospace" font-size="14" fill="#0f0" opacity="0.3">10101010101010101010101010101</text>
+  </g>
+  
+  <!-- Warning text -->
+  <text x="400" y="450" font-family="Impact, sans-serif" font-size="40" fill="#ff0000" text-anchor="middle">WHAT ARE U DOING</text>
+  <text x="400" y="500" font-family="Impact, sans-serif" font-size="40" fill="#ff0000" text-anchor="middle">I COULDVE HACKED U</text>
+  
+  <!-- Emoji-like elements -->
+  <text x="200" y="550" font-family="Arial" font-size="30" fill="#ffcc00" text-anchor="middle">😱</text>
+  <text x="300" y="550" font-family="Arial" font-size="30" fill="#ffcc00" text-anchor="middle">💻</text>
+  <text x="400" y="550" font-family="Arial" font-size="30" fill="#ffcc00" text-anchor="middle">🔓</text>
+  <text x="500" y="550" font-family="Arial" font-size="30" fill="#ffcc00" text-anchor="middle">⚠️</text>
+  <text x="600" y="550" font-family="Arial" font-size="30" fill="#ffcc00" text-anchor="middle">😂</text>
+</svg>

