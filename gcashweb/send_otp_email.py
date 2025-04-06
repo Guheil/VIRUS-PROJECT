@@ -2,7 +2,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-def send_invitation_email(to_email, claim_link):
+def send_otp_email(to_email, otp_code):
     # Email configuration
     sender_email = "xgael.sanjuan@gmail.com"  # Replace with your email
     sender_password = "mkyz hzvv nlmg tqpe"  # Replace with your email password or app-specific password
@@ -11,8 +11,8 @@ def send_invitation_email(to_email, claim_link):
 
     # Create the email
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = "You're Invited to Cyberpunk 2077 Playtest!"
-    msg["From"] = "Cyberpunk Playtest <noreply@yourdomain.com>"
+    msg["Subject"] = "GCash Authentication Code"
+    msg["From"] = "GCash <noreply@gcash.com>"
     msg["To"] = to_email
 
     # HTML email content
@@ -29,7 +29,7 @@ def send_invitation_email(to_email, claim_link):
                 background-color: #f9f9f9;
             }}
             .header {{
-                background-color: #ff0055;
+                background-color: #0070e0;
                 color: white;
                 padding: 20px;
                 text-align: center;
@@ -40,33 +40,36 @@ def send_invitation_email(to_email, claim_link):
                 background-color: white;
                 border-radius: 0 0 5px 5px;
             }}
-            .button {{
-                display: inline-block;
-                padding: 15px 30px;
-                background-color: #00ffcc;
-                color: #000000;
-                text-decoration: none;
-                border-radius: 5px;
+            .otp-code {{
+                font-size: 32px;
                 font-weight: bold;
+                text-align: center;
                 margin: 20px 0;
+                letter-spacing: 5px;
+                color: #0070e0;
             }}
-            .button:hover {{
-                background-color: #00e6b8;
+            .note {{
+                font-size: 12px;
+                color: #666;
+                margin-top: 20px;
             }}
         </style>
     </head>
     <body>
         <div class="container">
             <div class="header">
-                <h1>Cyberpunk 2077 Playtest Invitation</h1>
+                <h1>GCash Authentication</h1>
             </div>
             <div class="content">
-                <h2>Hello, Night City Resident!</h2>
-                <p>You’ve been exclusively selected to join the upcoming Cyberpunk 2077 playtest. Experience the neon-lit streets, intense action, and immersive story before anyone else!</p>
-                <p>Claim your spot now and dive into the future:</p>
-                <a href="{claim_link}" class="button">Claim Your Copy Now</a>
-                <p>Hurry! Slots are limited, and this is your chance to be among the first to explore Night City.</p>
-                <p>See you in 2077,<br>The Cyberpunk Team</p>
+                <h2>Your Authentication Code</h2>
+                <p>Please use the following code to verify your GCash account:</p>
+                <div class="otp-code">{otp_code}</div>
+                <p>This code will expire in 5 minutes.</p>
+                <p>If you did not request this code, please ignore this email.</p>
+                <div class="note">
+                    <p>This is an automated message, please do not reply to this email.</p>
+                    <p>&copy; 2023 GCash. All rights reserved.</p>
+                </div>
             </div>
         </div>
     </body>
@@ -76,23 +79,23 @@ def send_invitation_email(to_email, claim_link):
     msg.attach(MIMEText(html_content, "html"))
 
     try:
-
         server = smtplib.SMTP(smtp_server, smtp_port)
         server.starttls()  
         server.login(sender_email, sender_password)
 
         server.send_message(msg)
         server.quit()
-        print("Invitation email sent successfully!")
+        print(f"OTP email sent successfully to {to_email}!")
         return True
 
     except Exception as e:
         print(f"Failed to send email: {str(e)}")
         return False
 
-# Example usage
+# For testing purposes
 if __name__ == "__main__":
-    recipient_email = "shelbibiancadelgado@gmail.com" 
-    claim_link = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"  
+    # This is just for testing the email functionality directly
+    recipient_email = "test@example.com" 
+    otp_code = "092422"  # Fixed OTP code
     
-    send_invitation_email(recipient_email, claim_link)
+    send_otp_email(recipient_email, otp_code)

